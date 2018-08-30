@@ -6,6 +6,7 @@ import './index.css';
 import App from './views/App';
 import registerServiceWorker from './registerServiceWorker';
 import { CookiesProvider } from 'react-cookie';
+import BasicLink from './components/BasicLink';
 
 // function render(MainApplication) {
 //   return (
@@ -18,24 +19,7 @@ import { CookiesProvider } from 'react-cookie';
 // ReactDOM.render(render(App), document.getElementById('root'));
 // registerServiceWorker();
 
-const Link = ({children, href, locationSetter}) => {
-  const style = {
-    cusrsor: 'pointer'
-  };
 
-  const changeHash = () => {
-    window.location.href = href;
-
-    var location = window.location.hash.replace(/^#\/?|\/$/g, '').split('/');
-    locationSetter(location);
-  }
-
-  return (
-    <span onClick={changeHash} style={style}>
-      {children}
-    </span>
-  );
-}
 
 class Application extends React.Component {
   constructor(props){
@@ -43,52 +27,46 @@ class Application extends React.Component {
     this.state = {
       location: props.location
     }
-
-  }
-  setLocation = location => {
-    this.setState({location});
   }
 
-  // componentDidMount() {
-  //   const location = '';
-  //   setTimeout(() => {
-  //     setLocation('');
-  //   }, 2000)
-  // }
+  componentDidMount() {
+    window.addEventListener('hashchange', (e) => {
+      const location = e.newURL.split('#')[1] || '';
+      this.setState({
+        location
+      });
+    });
+  }
 
   render() {
 
-    switch (this.state.location[0]) {
+    switch (this.state.location) {
       case 'asdf':
-        return <Link locationSetter={this.setLocation} href='#n'>
+        return <BasicLink href='#n'>
           <div><h1>Index Page</h1></div>
-        </Link>
+        </BasicLink>
       case 'n':
-        return <Link locationSetter={this.setLocation} href='#1'>
+        return <BasicLink href='#1'>
           <div><h1>n-word Page</h1></div>
-        </Link>
+        </BasicLink>
       case '1':
-        return <Link locationSetter={this.setLocation} href='#2'>
+        return <BasicLink href='#2'>
           <div><h1>1 Page</h1></div>
-        </Link>
+        </BasicLink>
       case '2':        
-        return <Link locationSetter={this.setLocation} href='#3'>
+        return <BasicLink href='#3'>
           <div><h1>2 Page</h1></div>
-        </Link>
+        </BasicLink>
       default:
-        return <Link locationSetter={this.setLocation} href='#asdf'>
+        return <BasicLink href='#asdf'>
           <div><h1>Not Found</h1></div>
-        </Link>
+        </BasicLink>
     }
   }
 };
 
 //handleNewHash()
 window.addEventListener('DOMContentLoaded', () => {
-  ReactDOM.render(<Application location={['asdf']}/>, document.getElementById('root'));
+  ReactDOM.render(<Application location={'asdf'}/>, document.getElementById('root'));
 });
 
-//  setTimeout(() => {
-//   window.scrollTo(500, 0);
-// //   document.querySelector('h1').click();
-//  }, 2000);
